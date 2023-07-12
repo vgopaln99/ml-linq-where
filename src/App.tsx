@@ -1322,7 +1322,7 @@ export default function App() {
       anotherProperty: 20,
     },
     {
-      finishGoods: '2023-08-01',
+      finishGoods: '2023-08-25',
       clearToDock: '2023-07-10',
       someProperty: 'XYZ',
       anotherProperty: 5,
@@ -1339,9 +1339,14 @@ export default function App() {
     // Evaluate the query condition dynamically
 
     // Check if the condition is true for the given order
-    if (o.anotherProperty < 16) {
-      return false;
+    if (o.anotherProperty < 10) {
+      return query.replace(/"checkData"/g, "false");
     }
+
+    if (o.anotherProperty > 15 && o.anotherProperty < 22) {
+      return query.replace(/"checkData"/g, "true");
+    }
+
 
     return query;
   }
@@ -1349,7 +1354,7 @@ export default function App() {
   const filteredOrders: Order[] = Enumerable.from(orders)
     .where((o) => {
       const queryOutcome = validateOrder(
-        'o.finishGoods > "2023-08-23" && o.clearToDock > "2023-07-12"',
+        '(o.finishGoods > "2023-08-23" && (o.clearToDock > "2023-07-09" && "checkData"))',
         o
       );
       return typeof queryOutcome === 'string' ? eval(queryOutcome) : false;
