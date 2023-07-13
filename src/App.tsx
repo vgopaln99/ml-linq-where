@@ -1328,8 +1328,8 @@ export default function App() {
       anotherProperty: 5,
     },
     {
-      finishGoods: '2023-09-10',
-      clearToDock: '2023-07-20',
+      finishGoods: '2022-09-10',
+      clearToDock: '2022-07-20',
       someProperty: 'PQR',
       anotherProperty: 15,
     },
@@ -1351,17 +1351,53 @@ export default function App() {
     return query;
   }
 
-  const filteredOrders: Order[] = Enumerable.from(orders)
+  const queries = [
+    '(o.finishGoods > "2023-08-23" && (o.clearToDock > "2023-07-09"))',
+    '(o.someProperty == "PQR")'
+  ];
+
+  const validateOrderQueries = (o) => {
+
+      return [
+        '(o.finishGoods > "2023-08-23" && (o.clearToDock > "2023-07-09"))',
+        '((o.clearToDock > "2022-07-09") && true)'
+      ];
+    
+  };
+  
+  const filteredOrders = Enumerable.from(orders)
     .where((o) => {
-      const queryOutcome = validateOrder(
-        '(o.finishGoods > "2023-08-23" && (o.clearToDock > "2023-07-09" && "checkData"))',
-        o
-      );
-      return typeof queryOutcome === 'string' ? eval(queryOutcome) : false;
+      const queries = validateOrderQueries(o);
+      const parsedQueries = queries.map(query => new Function('o', `return ${query};`));
+      const combinedQuery = parsedQueries.some(query => query(o));
+      return combinedQuery;
     })
     .toArray();
-
-  console.log(filteredOrders);
+  
+  // const parsedQueries = queries.map(query => new Function('o', `return ${query};`));
+  
+  // const combinedQuery = o => parsedQueries.every(query => query(o));
+  
+  // const filteredOrders = Enumerable.from(orders)
+  //   .where(combinedQuery)
+  //   .toArray();
+  
+  // const validateOrderQueries = (o) => {
+  //     return [
+  //       '(o.finishGoods > "2023-08-23" && (o.clearToDock > "2023-07-09"))',
+  //       '((o.clearToDock > "2023-07-09") || o.someProperty == "PQR")'
+  //     ];
+    
+  // };
+  
+  // const parsedQueries = orders.map(order => validateOrderQueries(order).map(query => new Function('o', `return ${query};`)));
+  
+  // const combinedQuery = (o, i) => parsedQueries[i].every(query => query(o));
+  
+  // const filteredOrders = Enumerable.from(orders)
+  //   .where(combinedQuery)
+  //   .toArray();
+  
 
   return (
     <div>
