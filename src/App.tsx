@@ -1359,8 +1359,7 @@ export default function App() {
   const validateOrderQueries = (o) => {
 
       return [
-        '(o.finishGoods > "2023-08-23" && (o.clearToDock > "2023-07-09"))',
-        '((o.clearToDock > "2022-07-09") && true)'
+        '(((o.finishGoods > "2023-08-23") && true) && ((o.clearToDock > "2023-07-09") && true))',
       ];
     
   };
